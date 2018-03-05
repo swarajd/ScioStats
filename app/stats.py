@@ -2,6 +2,9 @@ import pandas as pd
 import re
 from collections import defaultdict, OrderedDict
 
+#
+# a class that can keep track of averages over time
+#
 class AverageNumber(object):
     def __init__(self, v=0):
         self.count = 0
@@ -18,6 +21,13 @@ class AverageNumber(object):
     def __repr__(self):
         return str(self.getAverage())
 
+#
+# a class that encapsulates
+# - the average rank
+# - the individual ranks
+# - the team name
+# of a student. This doesn't have name since it's being mapped to by name
+#
 class Student(object):
     def __init__(self):
         self.avgRank  = AverageNumber()
@@ -29,24 +39,27 @@ class Student(object):
 
 
 def getStats(rankFile, rosterFile, dataMap):
+    # first do basic statistics
     rankdf = pd.read_excel(rankFile)
     schoolPlacementNum(rankdf, dataMap)
 
+    # if we have a roster file, go ahead and do advanced statistics
     if (rosterFile is not None):
         rosterdfs = pd.read_excel(rosterFile, None)
         studentInfo(rankdf, rosterdfs, dataMap)
 
-    # for name, table in dataMap.items():
-    #     print(name)
-    #     print(table)
-    #     print("===================")
 
-# basic stat
+#
+# basic statistics
+#
 def schoolPlacementNum(rankdf, dataMap): 
+    # generalize the school names from the dataframe
     schoolNames = rankdf["Team"].map(lambda team: re.compile("(HS|SS)") \
                                        .split(team)[0] \
                                        .strip())
     
+    # going through the rows and counting the number of times 
+    # there is a place that is 1-6
     medalNums = rankdf.iloc[:,2:23].values
     medalNums = list(map(
                     lambda ranks: len(list(filter(
@@ -55,55 +68,52 @@ def schoolPlacementNum(rankdf, dataMap):
                     medalNums
                 ))
 
+    # map from school to number of medals
     schoolMedalMap = defaultdict(int)
     
+    # populating the map
     for i, school in enumerate(schoolNames):
         schoolMedalMap[school] += medalNums[i]
-    
-    # schoolMedalMap = OrderedDict(sorted(schoolMedalMap.items(), key=lambda x: x[1]))
-
-    # for school, placement in schoolMedalMap.items():
-    #     print("{} placed in {} event(s)".format(school, placement))
 
     dataMap["schoolMedalMap"] = schoolMedalMap
     
 
-# advanced stat
+#
+# advanced statistics
+#
 def studentInfo(rankdf, rosterdfs, dataMap):
 
-    # studentAverageRank = defaultdict(AverageNumber)
-    # studentRanks       = defaultdict(lambda: defaultdict(int))
-    studentMap         = defaultdict(Student)
+    # the map of students to their info
+    studentMap = defaultdict(Student)
 
-    # team names
+    # loop through all the teams
     for teamName in rosterdfs.keys():
+
+        # get the ranks for the relevant team
         teamRanks = rankdf[rankdf.Team == teamName].copy()
+
+        # rename the columns so they match with the roster headers
         teamRanks.rename(columns=lambda x: x[:-1].rstrip(), inplace=True)
-        # print(teamRanks)
-        # events
+        
+        # parse the appropriate roster dataframe and populate the student map
         for _, row in rosterdfs[teamName].iterrows():
+
+            # get the event name
             event = row[0]
+
+            # get the names of the students that partook in this event
             students = row[1:4]
             students = students[students.notnull()]
+
+            # get the place that they got
             place = teamRanks[event].values[0]
+
+            # populate the student map using the values obtained above
             for student in students:
                 studentMap[student].eventMap[event] = place
                 studentMap[student].avgRank += place
                 if (studentMap[student].teamName is None):
                     studentMap[student].teamName = teamName
-                # studentAverageRank[student] += place
-                # studentRanks[student][event] = place
-
     
-    # for student, ranks in studentRanks.items():
-    #     print(student, dict(ranks))
-
-    # for student in studentMap:
-    #     print(student, studentMap[student])
-
-    # for student in studentAverageRank:
-    #     print("[{}] Average Rank: {}".format(student, studentAverageRank[student]))
-
-    # dataMap["studentAverageRank"] = studentAverageRank
-    # dataMap["studentRanks"] = studentRanks
+    # add the student map to the overall data map
     dataMap["studentMap"] = studentMap

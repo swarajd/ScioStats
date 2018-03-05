@@ -5,10 +5,12 @@ from app import stats
 
 ALLOWED_EXTENSIONS = set(['xlsx', 'xls'])
 
+# this function checks if the files are excel files
 def allowedFile(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
+# this template is to shorten the decimals
 @app.template_filter("roundNum")
 def roundNum(n):
     return format(n, ".2f")
@@ -17,11 +19,13 @@ def roundNum(n):
 @limiter.limit("10/minute")
 def index():
     if (request.method == "POST"):
+        # we'll be processing the ranks and potentially the roster
         rankFile = None
         rosterFile = None
 
         uploadedFiles = request.files.keys()
 
+        # 'validate' both files
         if 'schoolRanks' in uploadedFiles:
             rankFile = request.files['schoolRanks']
             if not allowedFile(rankFile.filename):
@@ -37,6 +41,7 @@ def index():
             rosterFile.stream.seek(0)
 
 
+        # go ahead and run the statistics
         if (rankFile is None):
             flash("you need a rank file!")
             return redirect(request.url)
