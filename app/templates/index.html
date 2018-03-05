@@ -1,0 +1,44 @@
+{% extends 'base.html' %} 
+
+{% block content %} 
+
+<div id="fileUploadForm">
+
+    {% with messages = get_flashed_messages() %} 
+
+    {% if messages %}
+    
+    <div id="flashedMessages">
+        {% for message in messages %}
+            <div class="alert alert-danger flashedMessage" role="alert">
+                    {{ message }}
+            </div>
+        {% endfor %}
+    </div>
+    
+    <br/>
+    
+    {% endif %} 
+    
+    {% endwith %}
+
+    <form action="/" method="POST" enctype="multipart/form-data">
+        <div class="form-group">
+            <label for="schoolRanks">
+                School Ranks:
+                <input type="file" id="schoolRanks" name="schoolRanks">
+            </label>
+        </div>
+        <div class="form-group">
+            <label for="schoolRoster">
+                School Roster:
+                <input type="file" id="schoolRoster" name="schoolRoster">
+            </label>
+        </div>
+        <div class="text-center">
+            <button type="submit">Submit</button>
+        </div>
+    </form>
+</div>
+
+{% endblock %}

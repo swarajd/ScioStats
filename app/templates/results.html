@@ -1,0 +1,98 @@
+{% extends 'base.html' %} {% block content %}
+
+
+<a href="/" id="backButton">
+    <div class="btn btn-outline-primary">back</div>
+</a>
+
+<div class="container">
+
+    <ul class="nav nav-tabs" id="myTab" role="tablist">
+        <li class="nav-item active">
+            <a class="nav-link" id="basic-tab" data-toggle="tab" href="#basic" role="tab" aria-controls="basic" aria-selected="true">basic</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" id="advanced-tab" data-toggle="tab" href="#advanced" role="tab" aria-controls="advanced" aria-selected="false">advanced</a>
+        </li>
+    </ul>
+    <div class="tab-content" id="myTabContent">
+
+        <!-- basic -->
+        <div class="tab-pane fade active in" id="basic" role="tabpanel" aria-labelledby="basic-tab">
+            <table class="table" id="basicData">
+                <thead>
+                    <tr>
+                        <th scope="col">School</th>
+                        <th scope="col"># of placements</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for key, value in dataMap["schoolMedalMap"].items() %}
+                    <tr>
+                        <td>{{key}}</td>
+                        <td>{{value}}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- advanced -->
+        <div class="tab-pane fade" id="advanced" role="tabpanel" aria-labelledby="advanced-tab">
+            {% if dataMap["studentMap"] %}
+                <div class="students">
+                {% for key, student in dataMap["studentMap"].items() %}
+                    <div class="panel panel-default studentPanel">
+                        <div class="panel-heading">{{key}}</div>
+                        <div class="panel-body">
+                            <ul style="width: 100%;">
+                            {% for event, place in student.eventMap.items() %}
+                                <li>
+                                    {{event}} - {{place}}
+                                </li>
+                            {% endfor %}
+                            </ul>
+                            <p>Average rank: {{student.avgRank.getAverage() | roundNum }} </p>
+                        </div>
+                    </div>
+                {% endfor %}
+                </div>
+            {% else %}
+                nothing here yet
+            {% endif %}
+        </div>
+    </div>
+
+</div>
+
+{% endblock %} 
+
+{% block styles %}
+{{ super() }}
+<link rel="stylesheet" href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.5.1/css/buttons.dataTables.min.css">
+
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/1.5.1/js/dataTables.buttons.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/1.5.1/js/buttons.flash.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/1.5.1/js/buttons.html5.min.js"></script>
+
+<script>
+$(document).ready(function() {
+    $('#basicData').DataTable({
+        paging: false,
+        searching: false,
+        dom: 'Bfrtip',
+        buttons: [
+            'copy', 'csv', 'excel'
+        ]
+    });
+});
+</script>
+
+{% endblock %}

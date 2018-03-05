@@ -1,0 +1,33 @@
+#siteTitle {
+    margin-bottom: 50px;
+}
+
+#fileUploadForm {
+    display: flex;
+    /* justify-content: center; */
+    align-items: center;
+    flex-direction: column;
+}
+
+#backButton {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+}
+
+#statResults {
+    width: 80%;
+}
+
+.students {
+    width: 100%;
+    padding: 15px;
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+}
+
+.studentPanel {
+    width: 23%;
+    height: 200px;
+}
