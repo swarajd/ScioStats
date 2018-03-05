@@ -43,7 +43,7 @@
                 <div class="students">
                 {% for key, student in dataMap["studentMap"].items() %}
                     <div class="panel panel-default studentPanel">
-                        <div class="panel-heading">{{key}}</div>
+                        <div class="panel-heading">{{key}}<br/>{{student.teamName}}</div>
                         <div class="panel-body">
                             <ul style="width: 100%;">
                             {% for event, place in student.eventMap.items() %}

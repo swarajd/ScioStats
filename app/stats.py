@@ -35,7 +35,6 @@ def getStats(rankFile, rosterFile, dataMap):
     if (rosterFile is not None):
         rosterdfs = pd.read_excel(rosterFile, None)
         studentInfo(rankdf, rosterdfs, dataMap)
-        print("ADVANCED")
 
     # for name, table in dataMap.items():
     #     print(name)

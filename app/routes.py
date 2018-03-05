@@ -43,8 +43,6 @@ def index():
         else:
             dataMap = {}
             stats.getStats(rankFile, rosterFile, dataMap)
-            print(dataMap.keys())
-            # print("got stats")
         
         return render_template('results.html', title="ScioStats", dataMap=dataMap)
     else:
