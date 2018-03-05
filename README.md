@@ -1,3 +1,3 @@
-# Welcome to Microblog!
+# ScioStats
 
-This is an example application featured in my [Flask Mega-Tutorial](https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-i-hello-world). See the tutorial for instructions on how to work with it.
+Upload the regionals results, and a roster excel file, and see some insights on your team's performance!
