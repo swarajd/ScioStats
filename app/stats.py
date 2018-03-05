@@ -51,6 +51,7 @@ def getStats(rankFile, rosterFile, dataMap):
 
 #
 # basic statistics
+# this function maps the school to the number of events they placed in
 #
 def schoolPlacementNum(rankdf, dataMap): 
     # generalize the school names from the dataframe
@@ -68,18 +69,24 @@ def schoolPlacementNum(rankdf, dataMap):
                     medalNums
                 ))
 
-    # map from school to number of medals
+    # creating the map from school to number of times the school placed
     schoolMedalMap = defaultdict(int)
     
     # populating the map
     for i, school in enumerate(schoolNames):
         schoolMedalMap[school] += medalNums[i]
 
+    # add the school medal map to the overall data map
     dataMap["schoolMedalMap"] = schoolMedalMap
     
 
 #
 # advanced statistics
+# this method gives the following info about each student from
+# a given school's roster
+# - ranks in each event
+# - average rank
+# - specific team from the school (A team, B team, etc)
 #
 def studentInfo(rankdf, rosterdfs, dataMap):
 
