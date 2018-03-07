@@ -5,8 +5,7 @@ Upload the regionals results, and a roster excel file, and see some insights on 
 How to run:   
 ```bash
 $ cd app/
-$ virtualenv -p python3.5 .venv
-$ source .venv/bin/activate
-$ pip install -r requirements.txt
+$ pipenv install
+$ pipenv shell
 $ python run.py
 ```
