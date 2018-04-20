@@ -61,7 +61,7 @@ def schoolPlacementNum(rankdf, dataMap):
     
     # going through the rows and counting the number of times 
     # there is a place that is 1-6
-    medalNums = rankdf.iloc[:,2:23].values
+    medalNums = rankdf.iloc[:,2:-2].values
     medalNums = list(map(
                     lambda ranks: len(list(filter(
                         lambda rank: rank <= 6, 
