@@ -1,5 +1,5 @@
 import pandas as pd
-import re
+import re, difflib
 from collections import defaultdict, OrderedDict
 
 #
@@ -96,6 +96,12 @@ def studentInfo(rankdf, rosterdfs, dataMap):
     # regex to parse out B or C at the end
     regex = re.compile('(B|C)$')
 
+    # get event names
+    eventNames = list(map(
+        lambda x: regex.sub('', x).rstrip(), 
+        rankdf.columns[2:-2].tolist()
+    ))
+
     # loop through all the teams
     for teamName in rosterdfs.keys():
 
@@ -108,8 +114,8 @@ def studentInfo(rankdf, rosterdfs, dataMap):
         # parse the appropriate roster dataframe and populate the student map
         for _, row in rosterdfs[teamName].iterrows():
 
-            # get the event name
-            event = row[0]
+            # get the event name (account for spelling errors)
+            event = difflib.get_close_matches(row[0], eventNames, 1)[0]
 
             # get the names of the students that partook in this event
             students = row[1:4]
