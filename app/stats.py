@@ -1,5 +1,5 @@
 import pandas as pd
-import re, difflib
+import re, difflib, math
 from collections import defaultdict, OrderedDict
 
 #
@@ -59,22 +59,42 @@ def schoolPlacementNum(rankdf, dataMap):
                                        .split(team)[0] \
                                        .strip())
     
-    # going through the rows and counting the number of times 
-    # there is a place that is 1-6
-    medalNums = rankdf.iloc[:,2:-2].values
+    # a generic variable that can be accessed below
+    relevantNums = rankdf.iloc[:,2:-2]
+
+    # ranking numbers
+    rankingNums = rankdf.iloc[:,-2:].values
+
+    # get the number of medals (rank 1-6) each school has
     medalNums = list(map(
                     lambda ranks: len(list(filter(
                         lambda rank: rank <= 6, 
                         ranks))), 
-                    medalNums
+                    relevantNums.values
                 ))
 
+    # get the average rank of each school
+    avgRank = relevantNums.mean(axis=1).values
+
+    # get the average rank of each school's medals
+    lastPlace = len(schoolNames)
+
+    avgRankMedals = list(map(
+        lambda x: float("{0:.2f}".format(x)) if not math.isnan(x) else lastPlace,
+        relevantNums[relevantNums <= 6].mean(axis=1).values
+    ))
+
     # creating the map from school to number of times the school placed
-    schoolMedalMap = defaultdict(int)
+    schoolMedalMap = defaultdict(list)
     
     # populating the map
     for i, school in enumerate(schoolNames):
-        schoolMedalMap[school] += medalNums[i]
+        schoolMedalMap[school].append(medalNums[i])
+        schoolMedalMap[school].append(avgRank[i])
+        schoolMedalMap[school].append(avgRankMedals[i])
+        schoolMedalMap[school].append(float("{0:.2f}".format(medalNums[i]/avgRankMedals[i])))
+        schoolMedalMap[school].append(rankingNums[i][0])
+        schoolMedalMap[school].append(rankingNums[i][1])
 
     # add the school medal map to the overall data map
     dataMap["schoolMedalMap"] = schoolMedalMap

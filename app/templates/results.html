@@ -24,13 +24,20 @@
                     <tr>
                         <th scope="col">School</th>
                         <th scope="col"># of placements</th>
+                        <th scope="col">avg placement overall</th>
+                        <th scope="col">avg placement of medals</th>
+                        <th scope="col">placement score<br/>(# of placements /<br/> avg placement of medals)</th>
+                        <th scope="col">overall</th>
+                        <th scope="col">rank</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for key, value in dataMap["schoolMedalMap"].items() %}
                     <tr>
                         <td>{{key}}</td>
-                        <td>{{value}}</td>
+                        {% for v in value %}
+                        <td>{{v}}</td>
+                        {% endfor %}
                     </tr>
                     {% endfor %}
                 </tbody>
