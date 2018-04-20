@@ -93,6 +93,9 @@ def studentInfo(rankdf, rosterdfs, dataMap):
     # the map of students to their info
     studentMap = defaultdict(Student)
 
+    # regex to parse out B or C at the end
+    regex = re.compile('(B|C)$')
+
     # loop through all the teams
     for teamName in rosterdfs.keys():
 
@@ -100,7 +103,7 @@ def studentInfo(rankdf, rosterdfs, dataMap):
         teamRanks = rankdf[rankdf.Team == teamName].copy()
 
         # rename the columns so they match with the roster headers
-        teamRanks.rename(columns=lambda x: x[:-1].rstrip(), inplace=True)
+        teamRanks.rename(columns=lambda x: regex.sub('', x).rstrip(), inplace=True)
         
         # parse the appropriate roster dataframe and populate the student map
         for _, row in rosterdfs[teamName].iterrows():
